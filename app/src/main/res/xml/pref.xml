@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/general_settings" />
+    <EditTextPreference
+        android:defaultValue="@integer/default_duration"
+        android:inputType="number"
+        android:key="@string/pref_duration_key"
+        android:title="@string/slide_duration" />
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/listentries"
+        android:entryValues="@array/listvalues"
+        android:key="@string/pref_effects_key"
+        android:title="@string/effects_title" />
+
+    <PreferenceCategory android:title="@string/resource_settings" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_switch_key"
+        android:title="@string/pref_switch" />
+
+    <com.example.aleksandr.jetrubytest.CustomEditTextPreference
+        android:defaultValue="@string/empty_directory"
+        android:key="@string/pref_directory_chooser_key"
+        android:title="@string/directory_chooser" />
+
+    <PreferenceScreen
+        android:dependency="@string/pref_switch_key"
+        android:summary="@string/enter_resources_summary"
+        android:title="@string/enter_resources">
+        <EditTextPreference
+            android:inputType="textWebEditText"
+            android:key="@string/pref_link_key_1"
+            android:title="@string/pref_link_1" />
+        <EditTextPreference
+            android:inputType="textWebEditText"
+            android:key="@string/pref_link_key_2"
+            android:title="@string/pref_link_2" />
+        <EditTextPreference
+            android:inputType="textWebEditText"
+            android:key="@string/pref_link_key_3"
+            android:title="@string/pref_link_3" />
+        <EditTextPreference
+            android:inputType="textWebEditText"
+            android:key="@string/pref_link_key_4"
+            android:title="@string/pref_link_4" />
+        <EditTextPreference
+            android:inputType="textWebEditText"
+            android:key="@string/pref_link_key_5"
+            android:title="@string/pref_link_5" />
+    </PreferenceScreen>
+
+</PreferenceScreen>
