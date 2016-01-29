@@ -1,4 +1,4 @@
-package com.example.aleksandr.jetrubytest.view;
+package com.example.aleksandr.jetrubytest.view.ui;
 
 import android.app.Dialog;
 import android.content.Context;

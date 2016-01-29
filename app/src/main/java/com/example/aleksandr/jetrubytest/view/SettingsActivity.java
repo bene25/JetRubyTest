@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.example.aleksandr.jetrubytest.R;
+import com.example.aleksandr.jetrubytest.view.ui.CustomEditTextPreference;
 
 /**
  * Settings activity for user preference

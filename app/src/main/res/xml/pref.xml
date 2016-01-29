@@ -20,7 +20,7 @@
         android:key="@string/pref_switch_key"
         android:title="@string/pref_switch" />
 
-    <com.example.aleksandr.jetrubytest.view.CustomEditTextPreference
+    <com.example.aleksandr.jetrubytest.view.ui.CustomEditTextPreference
         android:defaultValue="@string/empty_directory"
         android:key="@string/pref_directory_chooser_key"
         android:title="@string/directory_chooser" />
