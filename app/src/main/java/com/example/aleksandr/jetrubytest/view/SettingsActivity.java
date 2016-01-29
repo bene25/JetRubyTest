@@ -95,7 +95,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         String key = preference.getKey();
 
         if (key.equals(getString(R.string.pref_duration_key))) {
-            if (prefValue.isEmpty() || Integer.parseInt(prefValue) < 1 || Integer.parseInt(prefValue) > 60) {
+            if (prefValue.isEmpty() || Integer.parseInt(prefValue) < getResources().getInteger(R.integer.min)
+                    || Integer.parseInt(prefValue) > getResources().getInteger(R.integer.max)) {
                 Toast.makeText(getApplicationContext(), getString(R.string.invalid_duration), Toast.LENGTH_SHORT).show();
             } else {
                 preference.setSummary(prefValue);

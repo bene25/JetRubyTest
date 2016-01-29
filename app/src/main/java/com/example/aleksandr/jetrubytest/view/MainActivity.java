@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         mPrefFileName = mSharedPreferences.getString(getString(R.string.pref_directory_chooser_key),
                 getString(R.string.empty_directory));
-        String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), "10");
-        String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), "0");
+        String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), getString(R.string.default_duration));
+        String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), getString(R.string.default_effect));
 
         fillArray();
         if (!interval.isEmpty()) {
@@ -127,12 +127,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
         if (key.equals(getString(R.string.pref_duration_key))) {
-            String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), "10");
+            String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), getString(R.string.default_duration));
             if (!interval.isEmpty()) {
                 mFlipper.setFlipInterval(Integer.parseInt(interval) * 1000);
             }
         } else if (key.equals(getString(R.string.pref_effects_key))) {
-            String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), "0");
+            String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), getString(R.string.default_effect));
             setAnimation(Integer.parseInt(effect));
         } else {
             fillArray();

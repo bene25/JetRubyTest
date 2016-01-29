@@ -48,6 +48,8 @@
 
     <string name="default_duration">10</string>
 
+    <string name="default_effect">10</string>
+
 
 
     <string name="pref_link_1">Link 1</string>
