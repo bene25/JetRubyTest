@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/general_settings" />
     <EditTextPreference
-        android:defaultValue="@integer/default_duration"
+        android:defaultValue="@string/default_duration"
         android:inputType="number"
         android:key="@string/pref_duration_key"
         android:title="@string/slide_duration" />
@@ -20,7 +20,7 @@
         android:key="@string/pref_switch_key"
         android:title="@string/pref_switch" />
 
-    <com.example.aleksandr.jetrubytest.CustomEditTextPreference
+    <com.example.aleksandr.jetrubytest.view.CustomEditTextPreference
         android:defaultValue="@string/empty_directory"
         android:key="@string/pref_directory_chooser_key"
         android:title="@string/directory_chooser" />

@@ -1,4 +1,4 @@
-package com.example.aleksandr.jetrubytest;
+package com.example.aleksandr.jetrubytest.view;
 
 import android.Manifest;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterViewFlipper;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.aleksandr.jetrubytest.R;
+import com.example.aleksandr.jetrubytest.utils.Const;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private AdapterViewFlipper mFlipper;
     private ArrayList<String> mArrayList;
     private SharedPreferences mSharedPreferences;
-    private String mPrefFile;
+    private String mPrefFileName;
     private Integer mStartPosition = 0;
     private int[] mResources = {
             R.string.pref_link_key_1,
@@ -37,27 +42,36 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private SliderBaseAdapter mSliderBaseAdapter;
     public static final int REQUEST_CODE_ASK_PERMISSIONS = 100;
 
+    private TextView mEmptyView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         mFlipper = (AdapterViewFlipper) findViewById(R.id.flipper);
 
         mArrayList = new ArrayList<>();
         mSliderBaseAdapter = new SliderBaseAdapter(this, mArrayList);
+
+        mEmptyView = (TextView) findViewById(R.id.emty_view);
+        mFlipper.setEmptyView(mEmptyView);
         mFlipper.setAdapter(mSliderBaseAdapter);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
-        mPrefFile = mSharedPreferences.getString(getString(R.string.pref_directory_chooser_key), "");
+        mPrefFileName = mSharedPreferences.getString(getString(R.string.pref_directory_chooser_key),
+                getString(R.string.empty_directory));
         String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), "10");
         String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), "0");
 
         fillArray();
-        mFlipper.setFlipInterval(Integer.parseInt(interval) * 1000);
+        if (!interval.isEmpty()) {
+            mFlipper.setFlipInterval(Integer.parseInt(interval) * 1000);
+        }
         setAnimation(Integer.parseInt(effect));
 
         /**
@@ -114,15 +128,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         if (key.equals(getString(R.string.pref_duration_key))) {
             String interval = mSharedPreferences.getString(getString(R.string.pref_duration_key), "10");
-            mFlipper.setFlipInterval(Integer.parseInt(interval) * 1000);
+            if (!interval.isEmpty()) {
+                mFlipper.setFlipInterval(Integer.parseInt(interval) * 1000);
+            }
         } else if (key.equals(getString(R.string.pref_effects_key))) {
-            String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), "");
+            String effect = mSharedPreferences.getString(getString(R.string.pref_effects_key), "0");
             setAnimation(Integer.parseInt(effect));
         } else {
             fillArray();
         }
-
-
     }
 
     @Override
@@ -136,61 +150,49 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
      */
 
     private void fillArray() {
-        if (mArrayList.size() > 0) {
+        if (mArrayList.size() > 0 && mArrayList != null) {
             mArrayList.clear();
         }
         Boolean isRemote = mSharedPreferences.getBoolean(getString(R.string.pref_switch_key), false);
-        if (!isRemote) {
-            mPrefFile = mSharedPreferences.getString(getString(R.string.pref_directory_chooser_key), "");
-            if (mPrefFile.equals("") || mPrefFile.equals(getString(R.string.empty_directory))) {
-                Toast.makeText(getApplicationContext(), getString(R.string.empty_resource_message), Toast.LENGTH_SHORT).show();
-            } else {
 
-                File prefFile = new File(mPrefFile);
-                File directory = prefFile.getParentFile();
-
-                File[] file = directory.listFiles();
-                for (int i = 0; i < file.length; i++) {
-
-                    String filePath = file[i].getAbsolutePath();
-
-                    if (filePath != null && isSupportedFile(filePath)) {
-                        mArrayList.add(filePath);
-
-                        mStartPosition = mArrayList.indexOf(mPrefFile);
-
-                    }
-                }
-                mSliderBaseAdapter.notifyDataSetChanged();
-                mFlipper.setSelection(mStartPosition);
-            }
-
-
-        } else {
+        if (isRemote) {
             for (int resId : mResources) {
                 String link = mSharedPreferences.getString(getString(resId), "");
                 if (!link.equals("")) {
                     mArrayList.add(link);
                 }
-
             }
             mSliderBaseAdapter.notifyDataSetChanged();
+
+        } else {
+            mPrefFileName = mSharedPreferences.getString(getString(R.string.pref_directory_chooser_key), getString(R.string.empty_directory));
+            if (!mPrefFileName.equals(getString(R.string.empty_directory))) {
+                File prefFile = new File(mPrefFileName);
+                File directory = prefFile.getParentFile();
+                if (directory != null) {
+                    File[] file = directory.listFiles();
+                    for (File aFile : file) {
+
+                        String filePath = aFile.getAbsolutePath();
+
+                        if (isSupportedFile(filePath)) {
+                            mArrayList.add(filePath);
+                            mStartPosition = mArrayList.indexOf(mPrefFileName);
+                        }
+                    }
+                    mSliderBaseAdapter.notifyDataSetChanged();
+                    mFlipper.setSelection(mStartPosition);
+                }
+            } else {
+                mFlipper.setEmptyView(mEmptyView);
+            }
         }
-
-        if (mArrayList.size() == 0 || mArrayList == null) {
-            Toast.makeText(getApplicationContext(), getString(R.string.empty_resource_message), Toast.LENGTH_SHORT).show();
-        }
-
-
     }
 
     private boolean isSupportedFile(String filePath) {
         String ext = filePath.substring((filePath.lastIndexOf(".") + 1), filePath.length());
 
-        if (Const.FILE_EXTN.contains(ext.toLowerCase(Locale.getDefault())))
-            return true;
-        else
-            return false;
+        return Const.FILE_EXTENSION.contains(ext.toLowerCase(Locale.getDefault()));
 
     }
 
@@ -229,11 +231,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
      */
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_ASK_PERMISSIONS: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.enable_permission), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.disable_permission), Toast.LENGTH_SHORT).show();
                 }

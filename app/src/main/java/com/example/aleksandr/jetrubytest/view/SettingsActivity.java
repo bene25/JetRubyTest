@@ -1,11 +1,11 @@
-package com.example.aleksandr.jetrubytest;
+package com.example.aleksandr.jetrubytest.view;
 
 /**
  * Created by aleksandr on 22.01.16.
+ * Settings activity class for storing shared preferences
  */
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,14 +15,14 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.example.aleksandr.jetrubytest.R;
+
 /**
  * Settings activity for user preference
  */
 
-public class SettingsActivity extends PreferenceActivity implements
-        SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity implements Preference.OnPreferenceChangeListener {
 
-    public static final Integer SELECT_IMAGE_INTENT = 1;
     private CustomEditTextPreference mFolderPreference;
     private int[] mResources = {
             R.string.pref_duration_key,
@@ -34,26 +34,24 @@ public class SettingsActivity extends PreferenceActivity implements
             R.string.pref_link_key_5
     };
 
+    public static final Integer SELECT_IMAGE_INTENT = 1;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-
         addPreferencesFromResource(R.xml.pref);
-
-        mFolderPreference = (CustomEditTextPreference) findPreference(getString(R.string.pref_directory_chooser_key));
-        Preference switchPreference = findPreference(getString(R.string.pref_switch_key));
 
         for (int res_id : mResources) {
             Preference linkPreference = findPreference(getString(res_id));
             bindPreferenceSummaryToValue(linkPreference);
         }
-
+        mFolderPreference = (CustomEditTextPreference) findPreference(getString(R.string.pref_directory_chooser_key));
         bindPreferenceSummaryToValue(mFolderPreference);
-        bindBooleanPreferenceSummaryToValue(switchPreference);
 
+        Preference switchPreference = findPreference(getString(R.string.pref_switch_key));
+        bindBooleanPreferenceSummaryToValue(switchPreference);
 
         mFolderPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -86,18 +84,6 @@ public class SettingsActivity extends PreferenceActivity implements
 
 
     @Override
-    protected void onDestroy() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        super.onDestroy();
-    }
-
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    }
-
-    @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         setPreferenceSummary(preference, newValue);
         return true;
@@ -106,20 +92,22 @@ public class SettingsActivity extends PreferenceActivity implements
     private void setPreferenceSummary(Preference preference, Object value) {
         String prefValue = value.toString();
         String key = preference.getKey();
+
         if (key.equals(getString(R.string.pref_duration_key))) {
-            if (Integer.parseInt(prefValue) < 1 || Integer.parseInt(prefValue) > 60) {
+            if (prefValue.isEmpty() || Integer.parseInt(prefValue) < 1 || Integer.parseInt(prefValue) > 60) {
                 Toast.makeText(getApplicationContext(), getString(R.string.invalid_duration), Toast.LENGTH_SHORT).show();
             } else {
                 preference.setSummary(prefValue);
             }
 
         } else if (key.equals(getString(R.string.pref_directory_chooser_key))) {
-
             prefValue = (prefValue.equals("")) ? getString(R.string.empty_directory) : prefValue;
             preference.setSummary(prefValue);
+
         } else if (key.equals(getString(R.string.pref_effects_key))) {
             String[] entries = getResources().getStringArray(R.array.listentries);
             preference.setSummary(entries[Integer.parseInt(prefValue)]);
+
         } else if (key.equals(getString(R.string.pref_switch_key))) {
             if (prefValue.equals("true")) {
                 mFolderPreference.setEnabled(false);
@@ -141,13 +129,15 @@ public class SettingsActivity extends PreferenceActivity implements
             String[] projection = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(projection[0]);
-            String picturePath = cursor.getString(columnIndex);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(projection[0]);
+                String picturePath = cursor.getString(columnIndex);
+                mFolderPreference.setText(picturePath);
+                mFolderPreference.setSummary(picturePath);
+                cursor.close();
+            }
 
-            mFolderPreference.setText(picturePath);
-            mFolderPreference.setSummary(picturePath);
-            cursor.close();
         }
     }
 

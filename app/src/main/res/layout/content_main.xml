@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.aleksandr.jetrubytest.MainActivity"
+    tools:context=".view.MainActivity"
     tools:showIn="@layout/activity_main">
 <!--
     <android.support.v4.view.ViewPager
@@ -23,5 +23,14 @@
         android:layout_height="match_parent"
         android:autoStart="true"
         android:layout_alignParentTop="true" />
+
+
+    <TextView
+        android:text="@string/empty_result"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/emty_view"
+        />
 
 </RelativeLayout>

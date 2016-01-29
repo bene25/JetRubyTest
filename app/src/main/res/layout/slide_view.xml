@@ -15,7 +15,8 @@
         android:layout_width="200dp"
         android:id="@+id/progress_bar"
         android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:max="100"
         android:visibility="invisible"
         style="@android:style/Widget.ProgressBar.Horizontal" />
-
 </RelativeLayout>

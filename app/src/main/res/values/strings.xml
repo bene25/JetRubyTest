@@ -38,7 +38,16 @@
 
     <string name="disable_permission">You wouldn\'t be able watching slides. Please enable permission.</string>
 
+    <string name="enable_permission">Permissions granted</string>
+
     <string name="disable_permission_menu">You can\'t watch slides, please enable permission.</string>
+
+    <string name="empty_result">There is nothing to show</string>
+
+    <string name="error_result">Couldn\'t retrieve image</string>
+
+    <string name="default_duration">10</string>
+
 
 
     <string name="pref_link_1">Link 1</string>

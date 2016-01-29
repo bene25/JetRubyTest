@@ -1,17 +1,14 @@
-package com.example.aleksandr.jetrubytest;
+package com.example.aleksandr.jetrubytest.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 /**
  * Created by aleksandr on 22.01.16.
+ * Helper methods for decoding large bitmaps
  */
 public class Utils {
 
-    /**
-     * Helper methods for decoding large bitmaps
-     *
-     */
     public static int calculateInSampleSize(BitmapFactory.Options options,
                                             int reqWidth,
                                             int reqHeight) {
